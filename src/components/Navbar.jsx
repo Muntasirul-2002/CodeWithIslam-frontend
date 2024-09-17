@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../images/logo-ide.png";
+import logo from "../images/codewithislam.png";
 import { Link } from "react-router-dom";
 import Avatar from "react-avatar";
 import { MdLightMode } from "react-icons/md";

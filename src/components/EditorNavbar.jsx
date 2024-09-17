@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../images/logo-ide.png";
+import logo from "../images/codewithislam.png";
 import {FiDownload} from 'react-icons/fi'
 
 const EditorNavbar = () => {
