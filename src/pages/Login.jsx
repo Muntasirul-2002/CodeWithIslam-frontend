@@ -1,43 +1,87 @@
 import React, { useState } from "react";
 import logo from "../images/logo-ide.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import image from "../images/authPageSide.png";
+import { api_base_url } from "../helper";
+import toast from "react-hot-toast";
 
 const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-  
-    const submitForm = (e)=>{
-      e.preventDefault();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const submitForm = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${api_base_url}/login`, {
+        mode: "cors",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+      const data = await response.json();
+      if (data.success === true) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("isLoggedIn", true);
+        localStorage.setItem("userId", data.userId);
+        toast.success("login success");
+        navigate("/");
+      } else {
+        toast.error("something went wrong");
+      }
+    } catch (error) {
+      toast.error(error);
     }
+  };
   return (
     <div>
-    <div className="container w-screen min-h-screen flex items-center justify-between pl-[100px]">
-      <div className="left w-[40%]">
-        <img className="w-[200px]" src={logo} alt="logo" />
-        <form onSubmit={submitForm} className="w-full mt-[60px]">
-          <div className="inputBox">
-            <input required onChange={(e)=> {setEmail(e.target.value)}} value={email} type="email" placeholder="Email" />
-          </div>
-          <div className="inputBox">
-            <input required onChange={(e)=> {setPassword(e.target.value)}} value={password} type="password" placeholder="Password" />
-          </div>
-          <p className="text-gray-400">
-            Don't have an account{" "}
-            <Link className="underline text-[#00AEEF]" to={"/signup"}>
-              Signup
-            </Link>
-          </p>
+      <div className="container w-screen min-h-screen flex items-center justify-between pl-[100px]">
+        <div className="left w-[40%]">
+          <img className="w-[200px]" src={logo} alt="logo" />
+          <form onSubmit={submitForm} className="w-full mt-[60px]">
+            <div className="inputBox">
+              <input
+                required
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                value={email}
+                type="email"
+                placeholder="Email"
+              />
+            </div>
+            <div className="inputBox">
+              <input
+                required
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                value={password}
+                type="password"
+                placeholder="Password"
+              />
+            </div>
+            <p className="text-gray-400">
+              Don't have an account{" "}
+              <Link className="underline text-[#00AEEF]" to={"/signup"}>
+                Signup
+              </Link>
+            </p>
 
-          <div className="btnBlue w-full mt-[20px]">Login</div>
-        </form>
-      </div>
-      <div className="right w-[55%]">
-        <img className="h-[100vh] w-[100%] object-cover" src={image} alt="" />
+            <button type="submit" className="btnBlue w-full mt-[20px]">Login</button>
+          </form>
+        </div>
+        <div className="right w-[55%]">
+          <img className="h-[100vh] w-[100%] object-cover" src={image} alt="" />
+        </div>
       </div>
     </div>
-  </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
